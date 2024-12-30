@@ -1,7 +1,8 @@
 import React from 'react'
 
 function Banner() {
-  return (<div className='pt-20 lg:flex lg:mx-20 2xl:mx-36 justify-around '>
+  return (
+  <div className='p-2 z-10 pt-32 lg:flex lg:mx-20 2xl:mx-36 justify-around '>
     <div className='text-5xl  lg:w-5/12'>
       Hello, welcomes here to learn something <span className='text-purple-800'>new everyday!!!</span>
       <p className='text-xl pt-4'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, quasi est nobis impedit incidunt exercitationem ex, nostrum illum non provident quae quo molestias quas omnis at ab itaque debitis ratione atque optio dicta dolor, blanditiis vel esse. Est eius, magnam, autem debitis maxime quis blanditiis placeat nesciunt, delectus quam possimus.</p>

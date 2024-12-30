@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
+import { Link, NavLink } from 'react-router-dom';
 
 function Navbar() {
+  const [sticky, setsticky] = useState(false);
+  useEffect(()=>{
+    const handleScroll=()=>{
+       if(window.scrollY > 0) setsticky(true);
+       else setsticky(false);
+    }
+    window.addEventListener("scroll",handleScroll);
+    return()=>{
+      window.removeEventListener("scroll",handleScroll);
+    };
+  },[]);
   return (
     <>
-      <div className="navbar bg-base-100">
+      <div className={` navbar lg:px-10 fixed top-0 left-0 right-0 transition-all duration-300 ease-out z-50 ${sticky?'bg-base-300 shadow-base-200 bg-gradient-to-t from-base-100 ':'bg-base-100'}`}>
     <div className="navbar-start">
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -29,19 +41,19 @@ function Navbar() {
         <li><a>About</a></li>
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl">daisyUI</a>
+    <a className="btn btn-ghost text-xl">
+      <img src="/public/logo.png" alt="Logo" className='w-14 ' />
+    </a>
   </div>
-  <div className="navbar-center hidden lg:flex">
-    <ul className="menu menu-horizontal px-1">
-    <li><a>Home</a></li>
-        <li><a>Course</a></li>
-        <li><a>Contant</a></li>
-        <li><a>About</a></li>
-    </ul>
+  <div className="navbar-center hidden lg:flex gap-5">
+    <NavLink to='/' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Home</NavLink>
+    <NavLink to='/course' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Course</NavLink>
+    <NavLink to='/contact' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Contant</NavLink>
+    <NavLink to='/About' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>About</NavLink>
   </div>
   <div className="navbar-end space-x-2">
   <input type="text" placeholder="Search" className="input input-bordered focus:outline-0  max-w-xs w-28 lg:w-40" />
-    <a className="btn ">Login</a>
+    <NavLink to='/logpage' className="btn bg-purple-800">Login</NavLink>
   </div>
 </div>
     </>
