@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Banner from './components/Banner';
-import Course from './Course/Course';
+import Course from './components/Course';
 import Root from './components/Root';
 import ImageSlider from './components/ImageSlider';
 import Contact from './components/Contact';
