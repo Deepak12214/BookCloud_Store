@@ -53,8 +53,8 @@ function ImageSlider() {
     <div className="slider-container    z-0">
       <Slider {...settings}>
         {filterData.map((data)=>{
-          return (<div className="flex justify-items-center ">
-          <Cart key={data.id} name={data.name} title={data.title} image={data.image} category={data.category} />
+          return (<div className="flex justify-items-center " key={data.id}>
+          <Cart  name={data.name} title={data.title} image={data.image} category={data.category} />
           </div>
           )
         })}

@@ -1,9 +1,22 @@
-import React from 'react'
-import list from '/public/list.json';
+import React, { useState ,useEffect} from 'react'
+import axios from 'axios'
 import Cart from '../components/Cart';
 import { NavLink } from 'react-router-dom';
 
 function Course() {
+  const [Book, setBook] = useState([]);
+  useEffect(() => {
+    const getBook = async ()=>{
+      try {
+        const res = await axios.get('http://localhost:4001/book');
+        setBook(res.data);        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBook();
+  },[]);
+
   return (
     <div className='p-2 lg:w-10/12 pt-24  m-auto space-y-10'>
       <div className="">
@@ -14,8 +27,8 @@ function Course() {
       <NavLink to='/'><input className='bg-purple-800 p-2 rounded-lg px-3  cursor-pointer ' type="button" value="Back" /></NavLink>
       </div> 
       <div className="flex flex-wrap justify-center gap-4">
-      {list.map((data)=>{
-          return (<div className="flex justify-items-center ">
+      {Book.map((data)=>{
+          return (<div className="flex justify-items-center " key={data._id}>
           <Cart key={data.id} name={data.name} title={data.title} image={data.image} category={data.category} />
           </div>
           )

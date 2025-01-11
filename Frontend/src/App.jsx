@@ -8,6 +8,8 @@ import ImageSlider from './components/ImageSlider';
 import Contact from './components/Contact';
 import Login from './components/Login';
 import About from './components/About';
+import Profile from './components/Profile';
+import Community from './components/Community';
 
 function App() {
   const appRouter = createBrowserRouter([
@@ -24,13 +26,18 @@ function App() {
           element: <Course />,  
         },
         {
-          path: "/about",
-          element: <About/>,  
+          path: "/Community",
+          element: <Community/>,  
         },
         {
           path: "/contact",
           element: <Contact />,  
+        },
+        {
+          path: "/profile",
+          element: <Profile />,  
         }
+
       ],
     },
     {

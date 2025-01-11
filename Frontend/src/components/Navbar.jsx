@@ -1,7 +1,20 @@
 import React, { useEffect,useState } from 'react'
-import { Link, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 function Navbar() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    fetch('http://localhost:4001/user/logout', {
+      method: 'GET',
+      credentials: 'include',
+    })
+    .then(() => {
+      navigate('/logpage');
+    })
+    .catch((error) => {
+      console.log('Error during logout:', error);
+    });
+  };
   const [sticky, setsticky] = useState(false);
   useEffect(()=>{
     const handleScroll=()=>{
@@ -38,7 +51,7 @@ function Navbar() {
         <li><a>Home</a></li>
         <li><a>Course</a></li>
         <li><a>Contant</a></li>
-        <li><a>About</a></li>
+        <li><a>Community</a></li>
       </ul>
     </div>
     <a className="btn btn-ghost text-xl">
@@ -49,11 +62,11 @@ function Navbar() {
     <NavLink to='/' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Home</NavLink>
     <NavLink to='/course' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Course</NavLink>
     <NavLink to='/contact' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Contant</NavLink>
-    <NavLink to='/About' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>About</NavLink>
+    <NavLink to='/Community' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Community</NavLink>
   </div>
   <div className="navbar-end space-x-2">
   <input type="text" placeholder="Search" className="input input-bordered focus:outline-0  max-w-xs w-28 lg:w-40" />
-    <NavLink to='/logpage' className="btn bg-purple-800">Login</NavLink>
+    <button onClick={handleLogout} className="btn bg-purple-800">Login</button>
   </div>
 </div>
     </>
