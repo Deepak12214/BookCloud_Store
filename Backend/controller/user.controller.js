@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import userModel from '../model/user.model.js';
+import postModel from '../model/post.model.js';
 
 export const register = async (req, res) => {
   try {
@@ -41,7 +42,7 @@ export const login = async (req,res)=>{
   // Generate a JWT token
   const token = jwt.sign({ email: email, userid: user._id }, 'Screate');
   res.cookie('token', token, { httpOnly: true });
-  
+  const Updateduser = await userModel.findOne({ email }).populate('posts');
   return res.status(200).json({
     message: 'Login successful',
     token, 
@@ -52,8 +53,8 @@ export const login = async (req,res)=>{
         email: user.email,
         age: user.age,
         profilepic: user.profilepic,
-      // posts: user.posts,
-      // savePost: user.savePost
+        posts : Updateduser.posts,
+        savePost: user.savePost
     }
   });
 
@@ -67,6 +68,32 @@ export const logout = (req,res)=>{
   res.cookie('token' , '');
   return res.status(200).json({ message: 'Logout successful' });
 }
+
+export const like = async (req,res)=>{
+    const post = await postModel.findOne({_id : req.params.id }).populate('user');
+
+  if(post.likes.indexOf(req.user.userid) === -1){
+     post.likes.push(req.user.userid); 
+  }
+  else{
+      post.likes.splice(post.likes.indexOf(req.user.userid) , 1);
+  }
+    await post.save();
+    return res.status(200).json({ message: 'Like successful' });
+  }
+export const ForgetPassword = async (req,res)=>{
+  try {
+     const {email,password} = req.body;
+       let user = await userModel.findOne({email});
+       if(!user)  return res.status(500).send('Something went wrong');
+       const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+       const UpadtedUser = await userModel.findOneAndUpdate({email} , {password : hash});
+       return res.status(200).json({ message: 'Password update successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+  }
 
 
 // app.get('/like/:id' , isLoggedIn , async (req,res)=>{

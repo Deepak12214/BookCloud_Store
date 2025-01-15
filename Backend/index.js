@@ -11,26 +11,21 @@ import jwt from 'jsonwebtoken';
 import postRoutes from './route/post.route.js';  
 
 const app = express();
-const URL = process.env.URL ;
 
 dotenv.config();
-// const port =process.env.PORT || 4000;
-const port = 4001;
-const URI = process.env.MongnoDBURI;
+const port =process.env.PORT || 4001;
+const URI = process.env.MONGO_URI;
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: process.env.URL, 
   credentials: true,
 }));
 app.use(cookieParser());
 
-//connect to mongoDB
 try {
-  mongoose.connect(URI);
-  console.log("connected to mongoDB");
-
+  mongoose.connect(URI)
 } catch (error) {
   console.log(" Error: ", error);
 }
