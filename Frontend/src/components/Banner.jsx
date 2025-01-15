@@ -22,9 +22,10 @@ function Banner() {
 <button className="btn bg-purple-900">Button</button>
     </div>
     <div className=''>
-        <img src="/public/BannerPic.jpg" alt="Thamnail_logo" />
+        <img src="https://i.imgur.com/r4UfJ8V.png" />
     </div>
   </div>
+
   )
 }
 

@@ -1,18 +1,29 @@
 import React, { useEffect,useState } from 'react'
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { persistor } from '../utils/appStore';
+import { toast } from 'react-toastify';
 
 function Navbar() {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
   const handleLogout = () => {
-    fetch('http://localhost:4001/user/logout', {
+    if(user == undefined||null){
+      navigate('/logpage');
+    }
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
       method: 'GET',
       credentials: 'include',
     })
     .then(() => {
+      dispatch({ type: 'LOGOUT' });
+      persistor.purge();
+      toast("Logout succefully")
       navigate('/logpage');
     })
     .catch((error) => {
-      console.log('Error during logout:', error);
+      toast.error(error);
     });
   };
   const [sticky, setsticky] = useState(false);
@@ -48,25 +59,28 @@ function Navbar() {
       <ul
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li><a>Home</a></li>
-        <li><a>Course</a></li>
-        <li><a>Contant</a></li>
-        <li><a>Community</a></li>
+    <NavLink to='/' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Home</NavLink>
+    <NavLink to='/books' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Book</NavLink>
+    <NavLink to='/Community' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Community</NavLink>
+    <NavLink to='/profile' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Profile</NavLink>
+    <NavLink to='/About' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>About</NavLink>
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl">
-      <img src="/public/logo.png" alt="Logo" className='w-14 ' />
-    </a>
+    <NavLink to={'/'} className="btn btn-ghost text-xl">
+      <img src="https://i.imgur.com/TmmEzhQ.png" alt="Logo" className='w-14 ' />
+    </NavLink>
   </div>
   <div className="navbar-center hidden lg:flex gap-5">
     <NavLink to='/' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Home</NavLink>
-    <NavLink to='/course' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Course</NavLink>
-    <NavLink to='/contact' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Contant</NavLink>
+    <NavLink to='/books' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Book</NavLink>
     <NavLink to='/Community' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Community</NavLink>
+    <NavLink to='/profile' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>Profile</NavLink>
+    <NavLink to='/About' className={({ isActive }) => (isActive ? 'text-purple-700 focus:text-purple-800 font-bold' : '')}>About</NavLink>
   </div>
   <div className="navbar-end space-x-2">
-  <input type="text" placeholder="Search" className="input input-bordered focus:outline-0  max-w-xs w-28 lg:w-40" />
-    <button onClick={handleLogout} className="btn bg-purple-800">Login</button>
+    <button onClick={handleLogout} className="btn bg-purple-800">
+    {user == undefined||null ?('LogIn'): ('LogOut')}
+      </button>
   </div>
 </div>
     </>

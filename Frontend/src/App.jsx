@@ -2,47 +2,61 @@ import React from 'react';
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Banner from './components/Banner';
-import Course from './components/Course';
 import Root from './components/Root';
 import ImageSlider from './components/ImageSlider';
-import Contact from './components/Contact';
 import Login from './components/Login';
 import About from './components/About';
 import Profile from './components/Profile';
 import Community from './components/Community';
+import ForgetPassword from './components/ForgetPassword';
+import PostEdit from './components/PostEdit';
+import Books from './components/Books';
 
 function App() {
   const appRouter = createBrowserRouter([
     {
       path: "/",
-      element: <Root />,  // Use the Main layout
+      element: <Root />, 
       children: [
         {
           path: "/",
           element: <><Banner /> <ImageSlider/></>,  
         },
         {
-          path: "/course",
-          element: <Course />,  
-        },
-        {
           path: "/Community",
           element: <Community/>,  
         },
         {
-          path: "/contact",
-          element: <Contact />,  
+          path: "/About",
+          element: <About />,  
         },
         {
           path: "/profile",
           element: <Profile />,  
+        },
+        {
+          path: "/edit",
+          element: <PostEdit/>,  
+        },
+        {
+          path: "/books",
+          element: <Books/>,
+          children : [
+            {
+              path: "/books/:resId",
+              element:<Books/>,  
+            },
+          ] 
         }
-
       ],
     },
     {
         path: "/logpage",
         element: <Login />,  
+    },
+    {
+      path: "/forgetpassword",
+      element: <ForgetPassword />,  
     }
   ]);
 

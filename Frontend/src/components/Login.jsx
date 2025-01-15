@@ -2,7 +2,10 @@ import React, { useState ,useRef} from "react";
 import { checkValidData } from "../utils/validate";
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from '../utils/userSlice.js'
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { addToken } from "../utils/tokenSlice.js";
+import { addOwnPost } from "../utils/postSlice.js";
+import { toast } from "react-toastify";
 const Login = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
@@ -21,13 +24,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    //Check valid email and password
     const message = checkValidData(email,password);
-    setErrorMessage(message);
+    toast.error(message);
     if(message) return;
 
     if(isSignInForm){//Login 
-      const response = await fetch('http://localhost:4001/user/login', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -38,7 +40,7 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const { _id, username, name, email, age, profilepic } =  data.user;
+        const { _id, username, name, email, age, profilepic,posts,savePost } =  data.user;
       dispatch(addUser({
         _id,
         username: username || '',
@@ -47,13 +49,16 @@ const Login = () => {
         age: age || '', 
         profilepic: profilepic || 'default.webp', 
       }));
+      const token = data.token;
+      dispatch(addToken(token));
+      toast(data.message);
         navigate('/');
       } else {
-        setErrorMessage(data.message);
+        toast.error(data.message);
       }
     }
     else{//Registration
-      const response = await fetch('http://localhost:4001/user/register', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -66,7 +71,7 @@ const Login = () => {
         setIsSignInForm(!isSignInForm);
         navigate('/logpage');
       } else {
-        setErrorMessage(data.message);
+        toast.error(data.message);
       }
     }
     
@@ -81,7 +86,7 @@ const Login = () => {
         />
       </div>
       <form  
-        className={`absolute p-12 bg-opacity-85  bg-base-300  left-0 right-0 mx-auto w-3/12  text-white space-y-4 rounded-xl shadow-sm border-purple-800 border-2  shadow-purple-700 ${isSignInForm ? "my-36" : "my-12"}`}
+        className={`absolute p-12 bg-opacity-85  bg-base-300  left-0 right-0 mx-auto w-11/12 lg:w-3/12  text-white space-y-3 rounded-xl shadow-sm border-purple-800 border-2  shadow-purple-700 ${isSignInForm ? "my-32" : "my-12"}`}
       >
         <p className="text-3xl font-bold mb-10 ">
           {isSignInForm ? "Sign In" : "Sign Up"}
@@ -123,18 +128,23 @@ const Login = () => {
           type="password"
           placeholder="Password"
         />
-        <p className="text-lg text-red-500 my-3">{errorMessage}</p>
         <button onClick={handleLogin}  className="bg-purple-800 w-full p-2 rounded-md font-semibold">
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
-        <p className="pt-3 px-0.5 cursor-pointer" onClick={toggleSignInForm}>
+        <div className="pt-3 px-0.5 cursor-pointer" onClick={toggleSignInForm}>
           {isSignInForm
-            ? "New to Netflix? "
+            ? "New to BookStore? "
             : "Already registered? "}
             <span className="text-purple-800 font-semibold">{isSignInForm
             ? "Sign Up Now"
             : "Sign In Now."}</span>
+            <p className=" px-0.5 pt-1 cursor-pointer text-purple-800 font-semibold" >
+          <NavLink to={'/forgetpassword'}>
+              Forget Password ?
+          </NavLink>
         </p>
+        </div>
+        
       </form>
     </div>
   );
