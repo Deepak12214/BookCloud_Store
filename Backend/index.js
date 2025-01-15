@@ -37,6 +37,6 @@ app.use('/post', postRoutes);
 app.get('/', (req, res) => {
   res.send('hello')
 });
-app.listen(9000,()=>{
+app.listen(3000,()=>{
     console.log(`app listening on port ${port}`);
 });
