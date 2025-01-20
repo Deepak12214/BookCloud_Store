@@ -36,7 +36,22 @@ const Profile = () => {
     }));
     navigate('/edit');
   };
+  const handleDelete = async (postId)=>{
+    try {
+          const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/post/delete/${postId}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    toast(res.data.message);
+    setRender(!render);
+    } catch (error) {
+    toast(error);
+    }
+
+  };
   const handleSubmit = async (e) => {
+          e.preventDefault();
           const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/post/newPost`, {
             method: 'POST',
             headers: {
@@ -49,7 +64,7 @@ const Profile = () => {
           const data = await response.json();
           if (response.ok) {
             toast("Post Upload Succefully");
-            useOwnPost();
+            setRender(!render);
             navigate('/profile');
           } else {
             toast.error(data.message);
@@ -62,8 +77,6 @@ const Profile = () => {
         <div className="w-10 h-10  rounded-md">
           <img
             className="w-full h-full object-cover overflow-hidden"
-            // src=https://imgs.search.brave.com/DIaWjfE5hMn_M2fC1KhO6nlRsbeSRHsfTFrsd549dE4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMtMDAuaWNvbmR1/Y2suY29tL2Fzc2V0/cy4wMC9wZXJzb24t/aWNvbi0xMDI0eDk2/Ny1ndTdqaGE2NC5w/bmc
-
             src={user==null||undefined?'https://imgs.search.brave.com/DIaWjfE5hMn_M2fC1KhO6nlRsbeSRHsfTFrsd549dE4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMtMDAuaWNvbmR1/Y2suY29tL2Fzc2V0/cy4wMC9wZXJzb24t/aWNvbi0xMDI0eDk2/Ny1ndTdqaGE2NC5w/bmc':'https://imgs.search.brave.com/3mHz5L3AG2cQ3RKqMscJDpw23-ffRq3OvGKgp54HU38/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZy/ZWVwaWsuY29tLzI1/Ni8xNjc5NC8xNjc5/NDA0My5wbmc_c2Vt/dD1haXNfaHlicmlk'}
             alt="User Profile"
           />
@@ -107,7 +120,8 @@ const Profile = () => {
       <p className="text-sm tracking-tight ">{post.content}</p>
       <div className="div">
         <small >{post.likes.length} likes</small>
-      <div className="btns flex gap-4">
+      <div className="  flex justify-between">
+        <div className="btns flex gap-4">
         <button className="text-blue-500" onClick={() => handleLike(post._id)}>
           {post.likes.includes(user._id) ? 'Unlike' : 'Like'}
         </button>
@@ -120,6 +134,18 @@ const Profile = () => {
           </button>
         )}
       </div>
+      <div className="delete">
+      {user._id === post.user && (
+          <button
+            className="text-zinc-200  bg-red-600 py-1 px-2 rounded-2xl"
+            onClick={() => handleDelete(post._id)}
+          >
+            Delete
+          </button>
+        )}
+      </div>
+      </div>
+      
       </div>
       
     </div>

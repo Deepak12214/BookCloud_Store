@@ -33,7 +33,7 @@ export const login = async (req,res)=>{
   try {
   const {email,password} = req.body;
   let user = await userModel.findOne({email});
-  if(!user)  return res.status(500).send('Something went wrong');
+  if(!user) return res.status(500).json({ message: 'Something went wrong' });
    
   // Compare the password
   const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -62,12 +62,12 @@ export const login = async (req,res)=>{
     res.status(500).json({ message: 'Server error', error });
   }
   
-}
+}; 
 
 export const logout = (req,res)=>{
   res.cookie('token' , '');
   return res.status(200).json({ message: 'Logout successful' });
-}
+};
 
 export const like = async (req,res)=>{
     const post = await postModel.findOne({_id : req.params.id }).populate('user');
@@ -80,74 +80,19 @@ export const like = async (req,res)=>{
   }
     await post.save();
     return res.status(200).json({ message: 'Like successful' });
-  }
-export const ForgetPassword = async (req,res)=>{
-  try {
-     const {email,password} = req.body;
-       let user = await userModel.findOne({email});
-       if(!user)  return res.status(500).send('Something went wrong');
-       const salt = await bcrypt.genSalt(10);
+  };
+  export const ForgetPassword = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      let user = await userModel.findOne({ email });
+      if (!user) return res.status(500).json({ message: 'Something went wrong' });
+  
+      const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
-       const UpadtedUser = await userModel.findOneAndUpdate({email} , {password : hash});
-       return res.status(200).json({ message: 'Password update successful' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
-  }
-
-
-// app.get('/like/:id' , isLoggedIn , async (req,res)=>{
-//   const post = await postModel.findOne({_id : req.params.id }).populate('user');
-//   const redirectUrl = req.query.redirectUrl || '/';
-//   if(post.likes.indexOf(req.user.userid) === -1){
-//      post.likes.push(req.user.userid); 
-//   }
-//   else{
-//       post.likes.splice(post.likes.indexOf(req.user.userid) , 1);
-//   }
-//   await post.save();
-//   res.redirect(redirectUrl);
-// })
-// app.get('/edit/:id' , isLoggedIn , async (req,res)=>{
-//   const post = await postModel.findOne({_id : req.params.id }).populate('user');
-//   res.render('edit' ,{post})
-// })
-// app.post('/update/:id' ,isLoggedIn, async (req,res)=>{
-//   const post = await postModel.findOneAndUpdate({_id : req.params.id} , {content : req.body.content})
-//   res.redirect('/profile');
-// })
-
-
-
-// export const userPost = async (req,res)=>{
-//       const user = await userModel.findOne({email : req.user.email});
-//       await user.populate('posts');
-//       res.render('profile' , {user});
-//   }
-
-
-// app.get('/profile' ,isLoggedIn ,async (req,res)=>{
-//     const user = await userModel.findOne({email : req.user.email});
-//     await user.populate('posts');
-//     res.render('profile' , {user});
-// })
-
-// export const userForgetPassword = async (req,res)=>{
-//       const {email,password} = req.body;
-//        let user = await userModel.findOne({email});
-//        if(!user)  return res.status(500).send('Something went wrong');
-//        const salt = await bcrypt.genSalt(10);
-//       const hash = await bcrypt.hash(password, salt);
-//        const newUser = await userModel.findOneAndUpdate({email} , {password : hash});
-//        res.redirect('/login');
-//   }
-
-// app.post('/forget/password' ,async (req,res)=>{
-//     const {email,password} = req.body;
-//      let user = await userModel.findOne({email});
-//      if(!user)  return res.status(500).send('Something went wrong');
-//      const salt = await bcrypt.genSalt(10);
-//     const hash = await bcrypt.hash(password, salt);
-//      const post = await userModel.findOneAndUpdate({email} , {password : hash});
-//      res.redirect('/login');
-// } )
+      await userModel.findOneAndUpdate({ email }, { password: hash });
+  
+      return res.status(200).json({ message: 'Password update successful' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error });
+    }
+  };

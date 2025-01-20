@@ -13,13 +13,15 @@ import postRoutes from './route/post.route.js';
 const app = express();
 
 dotenv.config();
-const port =process.env.PORT || 4001;
 const URI = process.env.MONGO_URI;
+const URL = process.env.URL;
+const PORT = process.env.PORT || 4000 ;
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cors({
-  origin: process.env.URL, 
+  origin: URL, 
   credentials: true,
 }));
 app.use(cookieParser());
@@ -37,6 +39,6 @@ app.use('/post', postRoutes);
 app.get('/', (req, res) => {
   res.send('hello')
 });
-app.listen(3000,()=>{
-    console.log(`app listening on port ${port}`);
+app.listen(PORT,()=>{
+    console.log(`app listening on port ${PORT}`);
 });

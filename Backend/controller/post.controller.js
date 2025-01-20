@@ -37,7 +37,6 @@ export const updatePost = async (req,res)=>{
 
 export const getOwnPost = async (req,res)=>{
 try { 
-
    const user = await userModel.findOne({_id : req.user.userid }).populate('posts');
   return res.status(200).json({
     message: 'request successful', 
@@ -49,7 +48,25 @@ try {
 }
 
 };
-// app.post('/update/:id' ,isLoggedIn, async (req,res)=>{
-//   const post = await postModel.findOneAndUpdate({_id : req.params.id} , {content : req.body.content})
-//   res.redirect('/profile');
-// })
+
+export const deletePost = async(req,res) =>{
+  try {
+    const post = await postModel.findOne({_id : req.params.id});
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    const user = await userModel.findOne({_id : req.user.userid })
+    if (!user.posts.includes(post._id)) {
+      return res.status(403).json({ message: 'Unauthorized to delete this post' });
+    }
+
+    user.posts = user.posts.filter(postId => postId.toString() !== post._id.toString());
+
+    await postModel.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
